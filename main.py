@@ -1,15 +1,10 @@
 import os
-import logging
 import asyncio
+import logging
 from datetime import datetime, timedelta
 
 from telegram import Update, ChatMemberUpdated
-from telegram.ext import (
-    Application,
-    CommandHandler,
-    ChatMemberHandler,
-    ContextTypes,
-)
+from telegram.ext import Application, CommandHandler, ChatMemberHandler, ContextTypes
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -19,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_IDS = list(map(int, os.getenv("CHANNEL_IDS", "").split(",")))
-
 user_data = {}
 
 async def id_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -52,7 +46,7 @@ async def check_and_remove():
                     logger.info(f"Removed user {user_id} from {chat_id}")
                     del chat_users[user_id]
                 except Exception as e:
-                    logger.warning(f"Failed to remove user {user_id} from {chat_id}: {e}")
+                    logger.warning(f"Failed to remove user {user_id}: {e}")
         await asyncio.sleep(3600)
 
 async def main():
