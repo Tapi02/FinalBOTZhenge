@@ -20,15 +20,12 @@ logger = logging.getLogger(__name__)
 TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_IDS = list(map(int, os.getenv("CHANNEL_IDS", "").split(",")))
 
-# Хранилище пользователей: {chat_id: {user_id: join_date}}
 user_data = {}
 
-# Команда /id — покажет chat_id
 async def id_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     await update.message.reply_text(f"Chat ID: {chat_id}")
 
-# Отслеживание вступления в канал/группу
 async def track_join(update: ChatMemberUpdated, context: ContextTypes.DEFAULT_TYPE):
     chat = update.chat
     member = update.new_chat_member
@@ -39,7 +36,6 @@ async def track_join(update: ChatMemberUpdated, context: ContextTypes.DEFAULT_TY
         chat_users[member.user.id] = join_date
         logger.info(f"User {member.user.id} joined {chat.id} at {join_date}")
 
-# Проверка пользователей и удаление
 async def check_and_remove():
     while True:
         now = datetime.utcnow()
@@ -57,9 +53,8 @@ async def check_and_remove():
                     del chat_users[user_id]
                 except Exception as e:
                     logger.warning(f"Failed to remove user {user_id} from {chat_id}: {e}")
-        await asyncio.sleep(3600)  # каждые 60 минут
+        await asyncio.sleep(3600)
 
-# Запуск бота
 async def main():
     global application
     application = Application.builder().token(TOKEN).build()
